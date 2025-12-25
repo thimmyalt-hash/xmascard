@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390, height=844, initial-scale=1.0, user-scalable=no">
+<title>Snow Card</title>
+
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        background: #000;
+    }
+
+    .card {
+        width: 390px;
+        height: 844px;
+        position: relative;
+        overflow: hidden;
+        background: url("card.png") no-repeat center center;
+        background-size: cover;
+    }
+
+    .snow {
+        position: absolute;
+        top: -10px;
+        background: white;
+        border-radius: 50%;
+        pointer-events: none;
+        animation: fall linear infinite;
+    }
+
+    .near { z-index: 2; opacity: 0.9; }
+    .mid { z-index: 1; opacity: 0.6; }
+    .far { z-index: 0; opacity: 0.3; }
+
+    @keyframes fall { to { transform: translateY(900px); } }
+
+    /* Bell button */
+    .bell {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 400px; /* adjust size relative to background */
+        height: auto;
+        cursor: pointer;
+        z-index: 3;
+        animation: float 2s ease-in-out infinite;
+    }
+
+    /* Floating animation */
+    @keyframes float {
+        0% { transform: translate(-50%, -52%); }
+        50% { transform: translate(-50%, -48%); }
+        100% { transform: translate(-50%, -52%); }
+    }
+</style>
+</head>
+
+<body>
+
+<div class="card" id="card"></div>
+
+<!-- Bell button -->
+<img src="bell.png" class="bell" id="bellBtn" alt="Play Music">
+
+<!-- Music -->
+<audio id="bgMusic">
+    <source src="song.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+    // Layered snow generation
+    const card = document.getElementById("card");
+
+    const snowLayers = [
+        {class:'near', count:50, size:[2,4], speed:[4,6]},
+        {class:'mid', count:40, size:[1,3], speed:[6,8]},
+        {class:'far', count:30, size:[0.5,2], speed:[8,12]}
+    ];
+
+    snowLayers.forEach(layer => {
+        for(let i=0;i<layer.count;i++){
+            const snow = document.createElement("div");
+            snow.className = "snow " + layer.class;
+            const size = Math.random()*(layer.size[1]-layer.size[0])+layer.size[0];
+            snow.style.width = size + "px";
+            snow.style.height = size + "px";
+            snow.style.left = Math.random() * 390 + "px";
+            snow.style.animationDuration = Math.random()*(layer.speed[1]-layer.speed[0])+layer.speed[0] + "s";
+            snow.style.animationDelay = Math.random()*5 + "s";
+            card.appendChild(snow);
+        }
+    });
+
+    // Play music on bell click
+    const bellBtn = document.getElementById("bellBtn");
+    const music = document.getElementById("bgMusic");
+
+    bellBtn.addEventListener("click", () => {
+        music.play();
+    });
+</script>
+
+</body>
+</html>
